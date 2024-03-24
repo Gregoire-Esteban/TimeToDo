@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">TimeToDo</string>
+    <string name="acc_search_action">Search tasks</string>
+    <string name="acc_sort_action">Sort tasks</string>
+    <string name="delete_all_action">Delete All</string>
+    <string name="acc_delete_all_action">Delete All Tasks</string>
+    <string name="search_placeholder">Search</string>
+    <string name="acc_search_icon">Search Icon</string>
+    <string name="acc_close">Close</string>
+    <string name="empty_content_message">No Task found, try adding a new one</string>
+    <string name="add_task_app_bar_title">Add Task</string>
+    <string name="acc_go_back">Go back</string>
+    <string name="acc_add_task">Add task</string>
+    <string name="acc_drop_down">Expand</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <!-- Alert Dialogs -->
+    <string name="alert_confirm">Yes</string>
+    <string name="alert_deny">No</string>
+    <string name="delete_task_alert_title">Remove this task ?</string>
+    <string name="delete_task_alert_subtitle">Are you sure you want to remove \'%1$s\'?</string>
+    <string name="delete_all_tasks_alert_title">Remove ALL tasks ?</string>
+</resources>
