@@ -50,7 +50,8 @@ fun ListScreen(navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: Tas
             ListAppBar(
                 sharedViewModel,
                 searchAppBarState,
-                searchTextState
+                searchTextState,
+                sortState
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

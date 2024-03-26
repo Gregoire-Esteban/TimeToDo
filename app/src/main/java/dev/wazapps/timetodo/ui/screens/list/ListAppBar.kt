@@ -1,6 +1,5 @@
 package dev.wazapps.timetodo.ui.screens.list
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,13 +42,15 @@ import dev.wazapps.timetodo.ui.theme.TOP_APP_BAR_HEIGHT
 import dev.wazapps.timetodo.ui.theme.TopAppBarContentColor
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
 import dev.wazapps.timetodo.utils.Action
+import dev.wazapps.timetodo.utils.states.RequestState
 import dev.wazapps.timetodo.utils.states.SearchAppBarState
 
 @Composable
 fun ListAppBar(
     sharedViewModel: TaskSharedViewModel,
     searchAppBarState: SearchAppBarState,
-    searchTextState: String
+    searchTextState: String,
+    sortState: RequestState<Priority>
 ) {
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
@@ -62,6 +63,9 @@ fun ListAppBar(
                 },
                 onDeleteAllClicked = {
                     sharedViewModel.executeAction(Action.DELETE_ALL)
+                },
+                selectedPriority = sortState.let {
+                    (it as? RequestState.Success)?.data ?: Priority.NONE
                 }
             )
         }
@@ -84,7 +88,8 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchedClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteAllClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit,
+    selectedPriority: Priority
 ) {
     TopAppBar(
         title = {
@@ -97,7 +102,8 @@ fun DefaultListAppBar(
             ListAppBarActions(
                 onSearchedClicked = onSearchedClicked,
                 onSortClicked = onSortClicked,
-                onDeleteAllConfirmed = onDeleteAllClicked
+                onDeleteAllConfirmed = onDeleteAllClicked,
+                selectedPriority = selectedPriority
             )
         }
     )
@@ -107,7 +113,8 @@ fun DefaultListAppBar(
 fun ListAppBarActions(
     onSearchedClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteAllConfirmed: () -> Unit
+    onDeleteAllConfirmed: () -> Unit,
+    selectedPriority: Priority
 ) {
     var openDialog by remember {
         mutableStateOf(false)
@@ -121,7 +128,7 @@ fun ListAppBarActions(
         onConfirmClicked = onDeleteAllConfirmed)
 
     SearchAction(onSearchedClicked)
-    SortAction(onSortClicked)
+    SortAction(onSortClicked, selectedPriority)
     DeleteAllAction { openDialog = true }
 }
 
@@ -140,7 +147,8 @@ fun SearchAction(
 
 @Composable
 fun SortAction(
-    onSortClicked: (Priority) -> Unit
+    onSortClicked: (Priority) -> Unit,
+    selectedPriority: Priority = Priority.NONE
 ) {
     var expandState by remember { mutableStateOf(false) }
     IconButton(onClick = { expandState = true }) {
@@ -155,7 +163,10 @@ fun SortAction(
         ) {
             DropdownMenuItem(
                 text = {
-                    PriorityItem(priority = Priority.HIGH)
+                    PriorityItem(
+                        priority = Priority.HIGH,
+                        isSelected = selectedPriority == Priority.HIGH
+                    )
                 },
                 onClick = {
                     expandState = false
@@ -164,7 +175,10 @@ fun SortAction(
             )
             DropdownMenuItem(
                 text = {
-                    PriorityItem(priority = Priority.LOW)
+                    PriorityItem(
+                        priority = Priority.LOW,
+                        isSelected = selectedPriority == Priority.LOW
+                    )
                 },
                 onClick = {
                     expandState = false
@@ -173,7 +187,10 @@ fun SortAction(
             )
             DropdownMenuItem(
                 text = {
-                    PriorityItem(priority = Priority.NONE)
+                    PriorityItem(
+                        priority = Priority.NONE,
+                        isSelected = selectedPriority == Priority.NONE
+                    )
                 },
                 onClick = {
                     expandState = false
@@ -300,6 +317,7 @@ private fun DefaultListAppBarPreview() {
     DefaultListAppBar(
         onSearchedClicked = {},
         onSortClicked = {},
-        onDeleteAllClicked = {}
+        onDeleteAllClicked = {},
+        selectedPriority = Priority.LOW
     )
 }
