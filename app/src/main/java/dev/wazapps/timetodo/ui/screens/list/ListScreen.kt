@@ -36,14 +36,14 @@ fun ListScreen(navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: Tas
     val tasksSortedByHighPriority by sharedViewModel.tasksSortedByHighPriority.collectAsState()
     val sortState by sharedViewModel.sortState.collectAsState()
 
-    val action by sharedViewModel.action
+    val latestAction = sharedViewModel.action
     val snackbarHostState = remember { SnackbarHostState() }
     DisplaySnackbar(
         snackbarHostState = snackbarHostState,
-        executeAction = { sharedViewModel.executeAction(action) },
+        executeAction = { sharedViewModel.executeAction(latestAction) },
         taskTitle = sharedViewModel.title.value,
-        onUndoClicked = { sharedViewModel.action.value = it },
-        action = action
+        onUndoClicked = { sharedViewModel.updateAction(it) },
+        action = latestAction
     )
     Scaffold(
         topBar = {
@@ -73,7 +73,7 @@ fun ListScreen(navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: Tas
             tasksSortedByHighPriority = tasksSortedByHighPriority,
             sortState = sortState,
             onSwipeToDelete = {
-                sharedViewModel.action.value = Action.DELETE
+                sharedViewModel.updateAction(Action.DELETE)
                 sharedViewModel.updateTaskFields(selectedTask = it)
             }
         )

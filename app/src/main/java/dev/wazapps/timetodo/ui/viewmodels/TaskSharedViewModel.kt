@@ -1,9 +1,10 @@
 package dev.wazapps.timetodo.ui.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,13 +35,14 @@ class TaskSharedViewModel @Inject constructor(
     private val todoDataStore: TodoDataStore
 ) : ViewModel() {
 
-    val id: MutableState<Int> = mutableIntStateOf(0)
+    var action by mutableStateOf(Action.NO_ACTION)
+        private set
+
+    private var id by mutableIntStateOf(0)
     // TODO : maybe extract these values in a dedicated VM
     val title = mutableStateOf("")
     val description = mutableStateOf("")
     val priority = mutableStateOf(Priority.LOW)
-
-    val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
     private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
     val allTasks = _allTasks.asStateFlow()
@@ -136,6 +138,7 @@ class TaskSharedViewModel @Inject constructor(
     }
 
     fun executeAction(action: Action) {
+        Log.d("TEEEST", "triggerrred")
         when(action) {
             Action.ADD -> addTask()
             Action.UPDATE -> updateTask()
@@ -146,7 +149,7 @@ class TaskSharedViewModel @Inject constructor(
                 // Do nothing... For now
             }
         }
-        this.action.value = Action.NO_ACTION
+        this.action = Action.NO_ACTION
     }
 
     private fun deleteAllTask() {
@@ -158,7 +161,7 @@ class TaskSharedViewModel @Inject constructor(
     private fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val toDoTaskToDelete = ToDoTask(
-                id = id.value,
+                id = id,
                 title = title.value,
                 description = description.value,
                 priority = priority.value
@@ -170,7 +173,7 @@ class TaskSharedViewModel @Inject constructor(
     private fun updateTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val toDoTaskToUpdate = ToDoTask(
-                id.value,
+                id,
                 title = title.value,
                 description = description.value,
                 priority = priority.value
@@ -197,7 +200,7 @@ class TaskSharedViewModel @Inject constructor(
     //TODO : maybe extract this to a dedicated TaskVM
     fun updateTaskFields(selectedTask: ToDoTask?){
         if (selectedTask != null){
-            id.value = selectedTask.id
+            id = selectedTask.id
             title.value = selectedTask.title
             description.value = selectedTask.description
             priority.value = selectedTask.priority
@@ -212,7 +215,7 @@ class TaskSharedViewModel @Inject constructor(
                     ))
             }*/
         } else {
-            id.value = 0
+            id = 0
             title.value = ""
             description.value = ""
             priority.value = Priority.LOW
@@ -223,6 +226,10 @@ class TaskSharedViewModel @Inject constructor(
         if (newTitle.length < MAX_TITLE_LENGTH){
             title.value = newTitle
         }
+    }
+
+    fun updateAction(newAction: Action){
+        this.action = newAction
     }
 
     fun validateFields() : Boolean {

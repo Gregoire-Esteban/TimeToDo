@@ -2,17 +2,14 @@ package dev.wazapps.timetodo.ui.screens.task
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.wazapps.timetodo.data.models.Priority
 import dev.wazapps.timetodo.data.models.ToDoTask
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
 import dev.wazapps.timetodo.utils.Action
@@ -62,6 +59,10 @@ fun TaskScreen(
                 sharedViewModel.priority.value = it
             }
         )
+
+        BackHandler {
+            navigateToListScreen(Action.NO_ACTION)
+        }
     }
 }
 
