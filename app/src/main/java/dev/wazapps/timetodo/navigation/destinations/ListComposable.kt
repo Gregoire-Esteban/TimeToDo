@@ -1,6 +1,10 @@
 package dev.wazapps.timetodo.navigation.destinations
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -22,18 +26,23 @@ fun NavGraphBuilder.listComposable(
             type = NavType.StringType
         })
     ) { navBackStackEntry ->
-        val rawAction = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY)
-        LaunchedEffect(key1 = rawAction) {
-            taskSharedViewModel.updateAction(
-                Action.fromString(rawAction)
-            )
+        val actionToPerform = Action.fromString(
+            navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY)
+        )
+
+        var lastAction by rememberSaveable { mutableStateOf(Action.NO_ACTION) }
+        LaunchedEffect(key1 = lastAction) {
+            if (actionToPerform != lastAction) {
+                lastAction = actionToPerform
+                taskSharedViewModel.updateAction(actionToPerform)
+            }
         }
 
-        val actionToPerform = taskSharedViewModel.action
+        val updatedAction = taskSharedViewModel.action
         ListScreen(
             navigateToTaskScreen = navigateToTaskScreen,
             sharedViewModel = taskSharedViewModel,
-            actionToPerform = actionToPerform
+            actionToPerform = updatedAction
         )
     }
 }

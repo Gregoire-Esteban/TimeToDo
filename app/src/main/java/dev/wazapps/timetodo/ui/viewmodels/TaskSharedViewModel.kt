@@ -73,6 +73,11 @@ class TaskSharedViewModel @Inject constructor(
             emptyList()
         )
 
+    init {
+        getAllTasks()
+        readSortingState()
+    }
+
     /**
      * Used in conjunction with the search bar
      */
@@ -97,7 +102,7 @@ class TaskSharedViewModel @Inject constructor(
         }
     }
 
-    fun readSortingState(){
+    private fun readSortingState(){
         _sortState.value = RequestState.Loading
         viewModelScope.launch {
             todoDataStore.readSortState
@@ -110,7 +115,7 @@ class TaskSharedViewModel @Inject constructor(
         }
     }
 
-    fun getAllTasks(){
+    private fun getAllTasks(){
         _allTasks.value = RequestState.Loading
         viewModelScope.launch {
             repository.getAllTasks

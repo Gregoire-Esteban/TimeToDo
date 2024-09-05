@@ -28,11 +28,6 @@ fun ListScreen(
     sharedViewModel: TaskSharedViewModel,
     actionToPerform: Action
 ) {
-    LaunchedEffect(key1 = true) {
-        sharedViewModel.getAllTasks()
-        sharedViewModel.readSortingState()
-    }
-
     LaunchedEffect(key1 = actionToPerform) {
         sharedViewModel.executeAction(actionToPerform)
     }
@@ -69,7 +64,6 @@ fun ListScreen(
         },
     ) {
         paddingValues ->
-        //region eventually to refacto in a new fun
         ListContent(
             modifier = Modifier
                 .padding(paddingValues)
@@ -86,7 +80,6 @@ fun ListScreen(
                 sharedViewModel.updateTaskFields(selectedTask = it)
             }
         )
-        //endregion
     }
 }
 

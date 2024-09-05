@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -116,7 +115,7 @@ fun HandleListContent(
     modifier: Modifier = Modifier
 ) {
     if (tasks.isEmpty()) {
-        EmptyContent()
+        EmptyContent() // display Empty State
     } else {
         TaskList(
             modifier = modifier,
@@ -127,7 +126,6 @@ fun HandleListContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskList(
     modifier: Modifier = Modifier,
@@ -135,6 +133,7 @@ fun TaskList(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     onSwipeToDelete: (ToDoTask) -> Unit
 ) {
+    // TODO : use content padding to space elements, and add light grey background ?
     LazyColumn(modifier = modifier) {
         items(
             items = todoItems,
@@ -167,6 +166,7 @@ fun TaskList(
                     animationSpec = tween(300),
                 )
             ) {
+                // TODO : fix swipe to delete multiple snackbar issue (see 61.)
                 SwipeToDismissBox(
                     state = dismissState,
                     backgroundContent = {
