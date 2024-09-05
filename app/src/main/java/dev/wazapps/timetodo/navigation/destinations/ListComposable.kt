@@ -28,9 +28,12 @@ fun NavGraphBuilder.listComposable(
                 Action.fromString(rawAction)
             )
         }
+
+        val actionToPerform = taskSharedViewModel.action
         ListScreen(
             navigateToTaskScreen = navigateToTaskScreen,
-            sharedViewModel = taskSharedViewModel
+            sharedViewModel = taskSharedViewModel,
+            actionToPerform = actionToPerform
         )
     }
 }

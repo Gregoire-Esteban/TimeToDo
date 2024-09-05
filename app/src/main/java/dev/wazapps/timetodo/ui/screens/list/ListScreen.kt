@@ -11,11 +11,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.wazapps.timetodo.ui.theme.SMALL_PADDING
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
 import dev.wazapps.timetodo.utils.Action
@@ -23,24 +23,33 @@ import dev.wazapps.timetodo.utils.states.SearchAppBarState
 import kotlinx.coroutines.launch
 
 @Composable
-fun ListScreen(navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: TaskSharedViewModel) {
+fun ListScreen(
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: TaskSharedViewModel,
+    actionToPerform: Action
+) {
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
         sharedViewModel.readSortingState()
     }
-    val allTasksReqState by sharedViewModel.allTasks.collectAsState()
-    val searchedTasksReqState by sharedViewModel.searchedTasks.collectAsState()
+
+    LaunchedEffect(key1 = actionToPerform) {
+        sharedViewModel.executeAction(actionToPerform)
+    }
+
+    val allTasksReqState by sharedViewModel.allTasks.collectAsStateWithLifecycle()
+    val searchedTasksReqState by sharedViewModel.searchedTasks.collectAsStateWithLifecycle()
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
-    val tasksSortedByLowPriority by sharedViewModel.tasksSortedByLowPriority.collectAsState()
-    val tasksSortedByHighPriority by sharedViewModel.tasksSortedByHighPriority.collectAsState()
-    val sortState by sharedViewModel.sortState.collectAsState()
+    val tasksSortedByLowPriority by sharedViewModel.tasksSortedByLowPriority.collectAsStateWithLifecycle()
+    val tasksSortedByHighPriority by sharedViewModel.tasksSortedByHighPriority.collectAsStateWithLifecycle()
+    val sortState by sharedViewModel.sortState.collectAsStateWithLifecycle()
 
     val latestAction = sharedViewModel.action
     val snackbarHostState = remember { SnackbarHostState() }
     DisplaySnackbar(
         snackbarHostState = snackbarHostState,
-        executeAction = { sharedViewModel.executeAction(latestAction) },
+        onComplete = { sharedViewModel.updateAction(Action.NO_ACTION) },
         taskTitle = sharedViewModel.title.value,
         onUndoClicked = { sharedViewModel.updateAction(it) },
         action = latestAction
@@ -81,8 +90,6 @@ fun ListScreen(navigateToTaskScreen: (taskId: Int) -> Unit, sharedViewModel: Tas
     }
 }
 
-
-
 @Composable
 fun ListFab(
     navigateToTaskScreen: (taskId: Int) -> Unit
@@ -97,13 +104,11 @@ fun ListFab(
 @Composable
 fun DisplaySnackbar(
     snackbarHostState: SnackbarHostState,
-    executeAction: () -> Unit,
+    onComplete: () -> Unit,
     onUndoClicked: (Action) -> Unit,
     taskTitle: String,
     action: Action
 ) {
-
-    executeAction()
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = action) {
         if (action == Action.DELETE) {
@@ -115,6 +120,7 @@ fun DisplaySnackbar(
                 )
                 undoDeleteTask(action, snackbarResult, onUndoClicked)
             }
+            onComplete()
         }
         if (action != Action.NO_ACTION) {
             scope.launch {
@@ -123,6 +129,7 @@ fun DisplaySnackbar(
                     withDismissAction = true
                 )
             }
+            onComplete()
         }
     }
 }

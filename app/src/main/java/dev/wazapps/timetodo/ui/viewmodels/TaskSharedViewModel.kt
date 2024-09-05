@@ -138,7 +138,6 @@ class TaskSharedViewModel @Inject constructor(
     }
 
     fun executeAction(action: Action) {
-        Log.d("TEEEST", "triggerrred")
         when(action) {
             Action.ADD -> addTask()
             Action.UPDATE -> updateTask()
@@ -149,7 +148,6 @@ class TaskSharedViewModel @Inject constructor(
                 // Do nothing... For now
             }
         }
-        this.action = Action.NO_ACTION
     }
 
     private fun deleteAllTask() {
