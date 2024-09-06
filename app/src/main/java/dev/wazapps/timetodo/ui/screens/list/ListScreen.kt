@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -110,7 +111,8 @@ fun DisplaySnackbar(
                 val snackbarResult = snackbarHostState.showSnackbar(
                     message = "Task $taskTitle deleted",
                     actionLabel = "UNDO",
-                    withDismissAction = true
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Short
                 )
                 undoDeleteTask(action, snackbarResult, onUndoClicked)
             }
