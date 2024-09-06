@@ -78,6 +78,7 @@ fun ListScreen(
             onSwipeToDelete = {
                 sharedViewModel.updateAction(Action.DELETE)
                 sharedViewModel.updateTaskFields(selectedTask = it)
+                snackbarHostState.currentSnackbarData?.dismiss()
             }
         )
     }
@@ -115,19 +116,20 @@ fun DisplaySnackbar(
             }
             onComplete()
         }
-        if (action != Action.NO_ACTION) {
-            scope.launch {
-                snackbarHostState.showSnackbar(
-                    message = getSnackbarMessage(action, taskTitle),
-                    withDismissAction = true
-                )
-            }
-            onComplete()
-        }
+        // TO uncomment / configurize if needed
+//        if (action != Action.NO_ACTION) {
+//            scope.launch {
+//                snackbarHostState.showSnackbar(
+//                    message = getSnackbarMessage(action, taskTitle),
+//                    withDismissAction = true
+//                )
+//            }
+//            onComplete()
+//        }
     }
 }
 
-// TODO : Maybe set a template system with Action enum
+// TODO : Maybe set a template system with Action enum & resources
 private fun getSnackbarMessage(action: Action, taskTitle: String?) =
     when(action) {
         Action.DELETE_ALL -> "All tasks removed"
@@ -143,11 +145,3 @@ private fun undoDeleteTask(
         onUndoClicked(Action.UNDO)
     }
 }
-
-/*
-@Preview
-@Composable
-private fun ListScreenPreview() {
-    ListScreen {}
-}
- */

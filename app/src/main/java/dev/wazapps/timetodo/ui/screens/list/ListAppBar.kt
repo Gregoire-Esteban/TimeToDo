@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -38,7 +39,6 @@ import dev.wazapps.timetodo.components.DisplayAlertDialog
 import dev.wazapps.timetodo.components.PriorityItem
 import dev.wazapps.timetodo.data.models.Priority
 import dev.wazapps.timetodo.ui.theme.MEDIUM_PADDING
-import dev.wazapps.timetodo.ui.theme.TOP_APP_BAR_HEIGHT
 import dev.wazapps.timetodo.ui.theme.TopAppBarContentColor
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
 import dev.wazapps.timetodo.utils.Action
@@ -233,6 +233,7 @@ fun DeleteAllAction(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(
     text: String,
@@ -243,12 +244,13 @@ fun SearchAppBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(TOP_APP_BAR_HEIGHT),
-        shadowElevation = 4.dp
+            .height(TopAppBarDefaults.TopAppBarExpandedHeight),
+        shadowElevation = 4.dp,
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = text,
+            shape = RectangleShape,
             onValueChange = { onTextChange(it) },
             placeholder = { Text(text = stringResource(R.string.search_placeholder), color = Color.White) },
             textStyle = TextStyle(
@@ -290,6 +292,8 @@ fun SearchAppBar(
             ),
             colors = TextFieldDefaults.colors(
                 cursorColor = TopAppBarContentColor,
+                focusedContainerColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primary,
                 focusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent

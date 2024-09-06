@@ -154,7 +154,8 @@ fun TaskList(
 
             val degrees by animateFloatAsState(
                 targetValue =
-                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0f else -45f
+                if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0f else -45f,
+                label = "swipeToDismissIconRotation"
             )
 
             var itemAppeared by remember { mutableStateOf(false) }
@@ -166,7 +167,6 @@ fun TaskList(
                     animationSpec = tween(300),
                 )
             ) {
-                // TODO : fix swipe to delete multiple snackbar issue (see 61.)
                 SwipeToDismissBox(
                     state = dismissState,
                     backgroundContent = {
