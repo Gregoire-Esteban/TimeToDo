@@ -13,6 +13,7 @@ datastorePreferences = "1.1.1"
 hiltAndroid = "2.50"
 kspVersion = "1.9.22-1.0.17"
 navVersion = "2.8.0"
+coreSplashscreen = "1.1.0-rc01"
 
 
 
@@ -25,6 +26,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-navigation-compose = { group = "androidx.navigation", name="navigation-compose", version.ref = "navVersion"}
+androidx-core-splashscreen  = { group = "androidx.core", name ="core-splashscreen", version.ref ="coreSplashscreen"}
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
