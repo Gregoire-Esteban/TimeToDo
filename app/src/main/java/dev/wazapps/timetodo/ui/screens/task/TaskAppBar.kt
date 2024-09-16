@@ -17,6 +17,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,13 +32,18 @@ import dev.wazapps.timetodo.utils.Action
 @Composable
 fun TaskAppBar(
     selectedTask: ToDoTask?,
+    validRulesChecked : Boolean,
     navigateToListScreen: (Action) -> Unit
 ) {
     if (selectedTask == null){
-        NewTaskAppBar(navigateToListScreen = navigateToListScreen)
+        NewTaskAppBar(
+            navigateToListScreen = navigateToListScreen,
+            validRulesChecked = validRulesChecked
+        )
     } else {
         ExistingTaskAppBar(
             selectedTask = selectedTask,
+            validRulesChecked = validRulesChecked,
             navigateToListScreen = navigateToListScreen
         )
     }
@@ -45,9 +52,12 @@ fun TaskAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTaskAppBar(
+    validRulesChecked : Boolean,
+    modifier: Modifier = Modifier,
     navigateToListScreen: (Action) -> Unit
 ) {
     TopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = stringResource(R.string.add_task_app_bar_title),
@@ -63,8 +73,11 @@ fun NewTaskAppBar(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         actions = {
-            AddAction {
-                navigateToListScreen(it)
+            TickAction(
+                contentDescription = stringResource(R.string.acc_add_task),
+                isEnabled = validRulesChecked
+            ) {
+                navigateToListScreen(Action.ADD)
             }
         }
     )
@@ -74,7 +87,8 @@ fun NewTaskAppBar(
 @Composable
 fun ExistingTaskAppBar(
     selectedTask: ToDoTask,
-    navigateToListScreen: (Action) -> Unit
+    navigateToListScreen: (Action) -> Unit,
+    validRulesChecked: Boolean
 ) {
     TopAppBar(
         title = {
@@ -96,7 +110,8 @@ fun ExistingTaskAppBar(
         actions = {
             ExistingTaskAppBarActions(
                 navigateToListScreen = navigateToListScreen,
-                selectedTask = selectedTask
+                selectedTask = selectedTask,
+                validRulesChecked = validRulesChecked
             )
         }
     )
@@ -104,7 +119,11 @@ fun ExistingTaskAppBar(
 }
 
 @Composable
-fun ExistingTaskAppBarActions(navigateToListScreen: (Action) -> Unit, selectedTask: ToDoTask) {
+fun ExistingTaskAppBarActions(
+    navigateToListScreen: (Action) -> Unit,
+    selectedTask: ToDoTask,
+    validRulesChecked: Boolean
+) {
     var openDialog by remember {
         mutableStateOf(false)
     }
@@ -118,8 +137,11 @@ fun ExistingTaskAppBarActions(navigateToListScreen: (Action) -> Unit, selectedTa
     DeleteAction {
         openDialog = true
     }
-    UpdateAction {
-        navigateToListScreen(it)
+    TickAction(
+        contentDescription = stringResource(id = R.string.acc_edit),
+        isEnabled = validRulesChecked
+    ) {
+        navigateToListScreen(Action.UPDATE)
     }
 }
 
@@ -131,19 +153,6 @@ fun DeleteAction(
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = "Delete",
-            tint = TopAppBarContentColor
-        )
-    }
-}
-
-@Composable
-fun UpdateAction(
-    onUpdateConfirmClicked: (Action) -> Unit,
-) {
-    IconButton(onClick = { onUpdateConfirmClicked(Action.UPDATE) }) {
-        Icon(
-            imageVector = Icons.Filled.Done,
-            contentDescription = "Edit",
             tint = TopAppBarContentColor
         )
     }
@@ -175,15 +184,23 @@ fun BackAction(
     }
 }
 
+/**
+ * Component used as app bar action to validate stuff
+ */
 @Composable
-fun AddAction(
-    onAddConfirmClicked: (Action) -> Unit,
+fun TickAction(
+    contentDescription: String,
+    isEnabled: Boolean,
+    modifier: Modifier = Modifier,
+    onTickClicked: () -> Unit
 ) {
-    // TODO : Maybe add a Text and an enabled state
-    IconButton(onClick = { onAddConfirmClicked(Action.ADD) }) {
+    IconButton(
+        onClick = onTickClicked,
+        modifier = modifier.alpha(if (isEnabled) 1f else .4f)
+    ){
         Icon(
             imageVector = Icons.Filled.Done,
-            contentDescription = stringResource(R.string.acc_add_task),
+            contentDescription = contentDescription,
             tint = TopAppBarContentColor
         )
     }
@@ -192,7 +209,7 @@ fun AddAction(
 @Preview
 @Composable
 private fun NewTaskAppBarPreview() {
-    NewTaskAppBar {}
+    NewTaskAppBar(validRulesChecked = false) {}
 }
 
 @Preview
@@ -205,6 +222,7 @@ private fun ExistingTaskAppBarPreview() {
             description = "",
             priority = Priority.HIGH
         ),
-        navigateToListScreen = {}
+        navigateToListScreen = {},
+        validRulesChecked = true
     )
 }

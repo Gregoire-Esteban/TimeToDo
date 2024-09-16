@@ -1,6 +1,7 @@
 package dev.wazapps.timetodo.ui.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,8 @@ class TaskSharedViewModel @Inject constructor(
     val title = mutableStateOf("")
     val description = mutableStateOf("")
     val priority = mutableStateOf(Priority.LOW)
+
+    val fieldsValid by derivedStateOf { title.value.isNotEmpty() }
 
     private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.Idle)
     val allTasks = _allTasks.asStateFlow()
@@ -236,7 +239,6 @@ class TaskSharedViewModel @Inject constructor(
     }
 
     fun validateFields() : Boolean {
-        return title.value.isNotEmpty() && description.value.isNotEmpty()
+        return title.value.isNotEmpty()
     }
-
 }

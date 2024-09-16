@@ -12,12 +12,16 @@
     <string name="acc_go_back">Go back</string>
     <string name="acc_add_task">Add task</string>
     <string name="acc_drop_down">Expand</string>
+    <string name="acc_edit">Edit</string> <!-- Could be renamed to 'save' -->
     <string name="title">Title</string>
-    <string name="description">Description</string>
+    <string name="description">Description (optional)</string>
+
     <!-- Alert Dialogs -->
     <string name="alert_confirm">Yes</string>
     <string name="alert_deny">No</string>
     <string name="delete_task_alert_title">Remove this task ?</string>
     <string name="delete_task_alert_subtitle">Are you sure you want to remove \'%1$s\'?</string>
     <string name="delete_all_tasks_alert_title">Remove ALL tasks ?</string>
+
+    <string name="save_task_error_message">Cannot save with empty title</string>
 </resources>

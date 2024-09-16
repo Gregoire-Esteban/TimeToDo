@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import dev.wazapps.timetodo.R
 import dev.wazapps.timetodo.data.models.ToDoTask
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
 import dev.wazapps.timetodo.utils.Action
@@ -38,6 +39,7 @@ fun TaskScreen(
                         }
                     }
                 },
+                validRulesChecked = sharedViewModel.fieldsValid
             )
         }
     ) { paddingValues ->
@@ -69,7 +71,7 @@ fun TaskScreen(
 fun displayToast(context: Context) {
     Toast.makeText(
         context,
-        "Cannot save with empty fields",
+        context.getString(R.string.save_task_error_message),
         Toast.LENGTH_LONG
     ).show()
 }
