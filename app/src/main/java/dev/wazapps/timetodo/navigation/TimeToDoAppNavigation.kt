@@ -1,29 +1,32 @@
 package dev.wazapps.timetodo.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import dev.wazapps.timetodo.navigation.destinations.listComposable
 import dev.wazapps.timetodo.navigation.destinations.taskComposable
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
-import dev.wazapps.timetodo.utils.Constants.LIST_SCREEN
+import dev.wazapps.timetodo.utils.Action
 
 // Eq. TimeToDoAppNavigation
 @Composable
 fun SetupNavigation(navController: NavHostController, taskSharedViewModel: TaskSharedViewModel) {
-    val screens = remember(navController) {
-            Screens(navController = navController)
-    }
+
     NavHost(
         navController = navController,
-        startDestination = LIST_SCREEN) {
+        startDestination = Screens.List(Action.NO_ACTION)) {
             listComposable(
-                navigateToTaskScreen = screens.task,
+                navigateToTaskScreen = { taskId ->
+                    navController.navigate(Screens.Task(id = taskId))
+                },
                 taskSharedViewModel = taskSharedViewModel
             )
             taskComposable(
-                navigateToListScreen = screens.list,
+                navigateToListScreen = { action ->
+                    navController.navigate(Screens.List(action = action)) {
+                        popUpTo(Screens.Task(-1)) { inclusive = true }
+                    }
+                },
                 taskSharedViewModel = taskSharedViewModel
             )
     }

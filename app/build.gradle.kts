@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHilt)
+    alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 android {
@@ -39,7 +41,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
@@ -69,6 +71,8 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.kotlinx.serialization.json)
 
     // Tests
     testImplementation(libs.junit)

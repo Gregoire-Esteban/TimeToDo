@@ -10,12 +10,8 @@ object Constants {
     const val PREFS_KEY_SORT = "sort_state"
     // endregion data related
 
-    const val LIST_SCREEN = "list/{action}"
-    const val TASK_SCREEN = "task/{taskId}"
-
-
-    const val LIST_ARGUMENT_KEY = "action"
-    const val TASK_ARGUMENT_KEY = "taskId"
+    // const val LIST_SCREEN = "list/{action}"
+    // const val TASK_SCREEN = "task/{taskId}"
 
     const val MAX_TITLE_LENGTH = 36
 }
