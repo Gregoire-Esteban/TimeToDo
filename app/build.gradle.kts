@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "dev.wazapps.timetodo"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "dev.wazapps.timetodo"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
