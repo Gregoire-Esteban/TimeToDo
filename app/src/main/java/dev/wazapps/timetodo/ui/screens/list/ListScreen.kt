@@ -56,6 +56,7 @@ fun ListScreen(
                 sharedViewModel,
                 searchAppBarState,
                 searchTextState,
+                allTasksReqState,
                 sortState
             )
         },

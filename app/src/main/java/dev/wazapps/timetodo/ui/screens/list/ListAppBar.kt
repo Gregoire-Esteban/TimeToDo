@@ -38,6 +38,7 @@ import dev.wazapps.timetodo.R
 import dev.wazapps.timetodo.components.DisplayAlertDialog
 import dev.wazapps.timetodo.components.PriorityItem
 import dev.wazapps.timetodo.data.models.Priority
+import dev.wazapps.timetodo.data.models.ToDoTask
 import dev.wazapps.timetodo.ui.theme.MEDIUM_PADDING
 import dev.wazapps.timetodo.ui.theme.TopAppBarContentColor
 import dev.wazapps.timetodo.ui.viewmodels.TaskSharedViewModel
@@ -50,10 +51,12 @@ fun ListAppBar(
     sharedViewModel: TaskSharedViewModel,
     searchAppBarState: SearchAppBarState,
     searchTextState: String,
+    allTasksReqState: RequestState<List<ToDoTask>>,
     sortState: RequestState<Priority>
 ) {
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
+            val taskCount = allTasksReqState as? RequestState.Success
             DefaultListAppBar(
                 onSearchedClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
@@ -66,7 +69,8 @@ fun ListAppBar(
                 },
                 selectedPriority = sortState.let {
                     (it as? RequestState.Success)?.data ?: Priority.NONE
-                }
+                },
+                taskListCount = taskCount?.data?.size
             )
         }
         else -> {
@@ -89,11 +93,15 @@ fun DefaultListAppBar(
     onSearchedClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
     onDeleteAllClicked: () -> Unit,
-    selectedPriority: Priority
+    selectedPriority: Priority,
+    taskListCount: Int? = null
 ) {
+    val taskCounterLabel = taskListCount?.let {
+        " ($it)"
+    } ?: ""
     TopAppBar(
         title = {
-            Text(text = "Tasks", color = TopAppBarContentColor)
+            Text(text = "Tasks$taskCounterLabel", color = TopAppBarContentColor)
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary
@@ -322,6 +330,7 @@ private fun DefaultListAppBarPreview() {
         onSearchedClicked = {},
         onSortClicked = {},
         onDeleteAllClicked = {},
-        selectedPriority = Priority.LOW
+        selectedPriority = Priority.LOW,
+        taskListCount = 10
     )
 }
